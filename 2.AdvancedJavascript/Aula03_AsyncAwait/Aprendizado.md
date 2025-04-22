@@ -352,5 +352,3 @@ iniciarSessao('admin', 'senha123')
     // Mostrar mensagem de erro para o usuário...
   });
 ```
-
-## 8. Recursos Adicionais
