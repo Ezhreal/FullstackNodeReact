@@ -1,5 +1,5 @@
 import React from "react";
-import Bird from "../../assets/images/bird.jpg";
+import Bird from "../assets/images/bird.jpg";
 const AssetsImports = () => {
   return (
     <>

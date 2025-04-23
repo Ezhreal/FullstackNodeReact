@@ -215,3 +215,102 @@ const incrementarDuasVezesCorreto = () => {
   setContador((prev) => prev + 1); // Agora isso usa 1 + 1 = 2
 };
 ```
+
+## Renderização Condicional
+
+A renderização condicional permite mostrar ou ocultar elementos na interface com base em states e condições:
+
+### 1. Usando o operador lógico &&
+
+Este método é usado quando você quer mostrar algo apenas quando uma condição é verdadeira:
+
+```jsx
+import { useState } from "react";
+
+function ExemploAnd() {
+  const [mostrarMensagem, setMostrarMensagem] = useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setMostrarMensagem(!mostrarMensagem)}>
+        {mostrarMensagem ? "Ocultar" : "Mostrar"}
+      </button>
+
+      {/* Renderização condicional com && */}
+      {mostrarMensagem && (
+        <div>Esta mensagem só aparece quando o state é true!</div>
+      )}
+    </div>
+  );
+}
+```
+
+### 2. Usando o operador ternário
+
+Este método é útil quando você tem duas opções alternativas:
+
+```jsx
+import { useState } from "react";
+
+function ExemploTernario() {
+  const [status, setStatus] = useState("pendente");
+
+  return (
+    <div>
+      <button onClick={() => setStatus("aprovado")}>Aprovar</button>
+      <button onClick={() => setStatus("rejeitado")}>Rejeitar</button>
+
+      {/* Renderização condicional com operador ternário */}
+      {status === "aprovado" ? (
+        <p>Status: Aprovado ✅</p>
+      ) : status === "rejeitado" ? (
+        <p>Status: Rejeitado ❌</p>
+      ) : (
+        <p>Status: Pendente ⏳</p>
+      )}
+    </div>
+  );
+}
+```
+
+### 3. Usando funções de renderização
+
+Para lógicas mais complexas, podemos encapsular a renderização em funções:
+
+```jsx
+import { useState } from "react";
+
+function ExemploFuncao() {
+  const [etapa, setEtapa] = useState(1);
+
+  // Função para renderização condicional
+  const renderizarEtapa = () => {
+    switch (etapa) {
+      case 1:
+        return <div>Etapa 1: Informações Pessoais</div>;
+      case 2:
+        return <div>Etapa 2: Informações de Contato</div>;
+      case 3:
+        return <div>Etapa 3: Revisão</div>;
+      default:
+        return <div>Etapa não encontrada</div>;
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={() => setEtapa(etapa > 1 ? etapa - 1 : 1)}>
+        Anterior
+      </button>
+      <button onClick={() => setEtapa(etapa < 3 ? etapa + 1 : 3)}>
+        Próximo
+      </button>
+
+      {/* Chamada da função de renderização */}
+      {renderizarEtapa()}
+    </div>
+  );
+}
+```
+
+Estas técnicas de renderização condicional, combinadas com states, permitem criar interfaces dinâmicas e responsivas às ações do usuário.

@@ -1,8 +1,9 @@
-import Bird from "./assets/images/bird.jpg";
 import "./App.css";
-import AssetsImports from "./assets/components/AssetsImports";
-import DataManagement from "./assets/components/DataManagement";
-import ListRender from "./assets/components/ListRender";
+import AssetsImports from "./components/AssetsImports";
+import ConditionalFormRendering from "./components/ConditionalFormRendering";
+import ConditionalRendering from "./components/ConditionalRendering";
+import DataManagement from "./components/DataManagement";
+import ListRender from "./components/ListRender";
 
 function App() {
   return (
@@ -11,6 +12,8 @@ function App() {
       <AssetsImports />
       <DataManagement />
       <ListRender />
+      <ConditionalRendering />
+      <ConditionalFormRendering />
     </>
   );
 }
