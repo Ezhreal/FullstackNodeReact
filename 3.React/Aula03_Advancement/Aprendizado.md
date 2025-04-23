@@ -313,4 +313,537 @@ function ExemploFuncao() {
 }
 ```
 
-Estas técnicas de renderização condicional, combinadas com states, permitem criar interfaces dinâmicas e responsivas às ações do usuário.
+## Introdução às Props
+
+Props (abreviação de "properties") são a forma como os componentes React recebem dados de seus componentes pais:
+
+```jsx
+// Componente pai
+function App() {
+  return (
+    <div>
+      <Saudacao nome="Maria" />
+    </div>
+  );
+}
+
+// Componente filho recebendo props
+function Saudacao(props) {
+  return <h1>Olá, {props.nome}!</h1>;
+}
+```
+
+Características importantes das props:
+
+- São passadas de cima para baixo (do componente pai para o filho)
+- São somente leitura (o componente filho não deve modificá-las)
+- Podem ser de qualquer tipo: strings, números, booleanos, arrays, objetos, funções
+- Permitem a composição e reuso de componentes
+
+## Destructuring em Props
+
+Podemos usar desestruturação para acessar as props de forma mais limpa:
+
+```jsx
+// Sem destructuring
+function Perfil(props) {
+  return (
+    <div>
+      <h2>{props.nome}</h2>
+      <p>Idade: {props.idade}</p>
+      <p>Profissão: {props.profissao}</p>
+    </div>
+  );
+}
+
+// Com destructuring
+function Perfil({ nome, idade, profissao }) {
+  return (
+    <div>
+      <h2>{nome}</h2>
+      <p>Idade: {idade}</p>
+      <p>Profissão: {profissao}</p>
+    </div>
+  );
+}
+
+// Uso do componente
+function App() {
+  return <Perfil nome="Carlos" idade={28} profissao="Desenvolvedor" />;
+}
+```
+
+Vantagens do destructuring:
+
+- Código mais limpo e legível
+- Fácil definição de valores padrão
+- Permite renomear props quando necessário
+
+## Reaproveitamento de Componentes
+
+O reaproveitamento de componentes é uma das principais vantagens do React. Com props, podemos criar componentes genéricos e reutilizáveis:
+
+```jsx
+function Botao({ texto, cor, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        backgroundColor: cor || "#007bff",
+        color: "white",
+        padding: "10px 15px",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer",
+      }}
+    >
+      {texto}
+    </button>
+  );
+}
+
+// Usando o componente Botao em diferentes contextos
+function App() {
+  const salvar = () => alert("Salvo com sucesso!");
+  const cancelar = () => alert("Operação cancelada");
+
+  return (
+    <div>
+      <h1>Formulário</h1>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <Botao texto="Salvar" onClick={salvar} />
+        <Botao texto="Cancelar" cor="#dc3545" onClick={cancelar} />
+      </div>
+    </div>
+  );
+}
+```
+
+## Renderização de Lista em Componente
+
+Podemos criar componentes específicos para renderizar listas, tornando nossa aplicação mais modular:
+
+```jsx
+// Componente para renderizar um item da lista
+function ItemUsuario({ usuario }) {
+  return (
+    <li
+      style={{
+        marginBottom: "10px",
+        padding: "10px",
+        border: "1px solid #ddd",
+      }}
+    >
+      <strong>{usuario.nome}</strong>
+      <p>{usuario.email}</p>
+      <small>ID: {usuario.id}</small>
+    </li>
+  );
+}
+
+// Componente para renderizar a lista completa
+function ListaUsuarios({ usuarios }) {
+  return (
+    <div>
+      <h2>Lista de Usuários</h2>
+      {usuarios.length === 0 ? (
+        <p>Nenhum usuário encontrado.</p>
+      ) : (
+        <ul style={{ listStyleType: "none", padding: 0 }}>
+          {usuarios.map((usuario) => (
+            <ItemUsuario key={usuario.id} usuario={usuario} />
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// Uso do componente de lista
+function App() {
+  const [usuarios] = useState([
+    { id: 1, nome: "João", email: "joao@exemplo.com" },
+    { id: 2, nome: "Maria", email: "maria@exemplo.com" },
+    { id: 3, nome: "Pedro", email: "pedro@exemplo.com" },
+  ]);
+
+  return (
+    <div>
+      <h1>Sistema de Usuários</h1>
+      <ListaUsuarios usuarios={usuarios} />
+    </div>
+  );
+}
+```
+
+## Fragments
+
+Fragments permitem agrupar elementos filhos sem adicionar nós extras ao DOM:
+
+```jsx
+// Sem Fragment (adiciona uma div extra ao DOM)
+function Exemplo() {
+  return (
+    <div>
+      <h1>Título</h1>
+      <p>Parágrafo 1</p>
+      <p>Parágrafo 2</p>
+    </div>
+  );
+}
+
+// Com Fragment (sintaxe explícita)
+function ExemploComFragment() {
+  return (
+    <React.Fragment>
+      <h1>Título</h1>
+      <p>Parágrafo 1</p>
+      <p>Parágrafo 2</p>
+    </React.Fragment>
+  );
+}
+
+// Com Fragment (sintaxe abreviada)
+function ExemploComFragmentAbreviado() {
+  return (
+    <>
+      <h1>Título</h1>
+      <p>Parágrafo 1</p>
+      <p>Parágrafo 2</p>
+    </>
+  );
+}
+```
+
+Benefícios dos Fragments:
+
+- Evitam nós extras no DOM
+- Melhoram a performance
+- São especialmente úteis em situações como tabelas, onde elementos como `<div>` não são permitidos como filhos diretos de `<tr>`
+
+## A Prop Children
+
+A prop `children` permite passar componentes ou elementos como filhos para outros componentes:
+
+```jsx
+function Card({ titulo, children }) {
+  return (
+    <div
+      style={{
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "15px",
+        margin: "10px 0",
+      }}
+    >
+      <h3>{titulo}</h3>
+      <div>{children}</div>
+    </div>
+  );
+}
+
+// Uso do componente com children
+function App() {
+  return (
+    <div>
+      <Card titulo="Informações">
+        <p>Este é um conteúdo passado como children.</p>
+        <button>Clique aqui</button>
+      </Card>
+
+      <Card titulo="Estatísticas">
+        <ul>
+          <li>Usuários: 120</li>
+          <li>Visitas: 3500</li>
+          <li>Conversões: 8%</li>
+        </ul>
+      </Card>
+    </div>
+  );
+}
+```
+
+Vantagens da prop children:
+
+- Permite composição flexível de componentes
+- Facilita a criação de componentes wrapper ou de layout
+- Torna a estrutura da aplicação mais declarativa e intuitiva
+
+## Função como Prop
+
+Podemos passar funções como props para permitir que componentes filhos comuniquem-se com seus pais:
+
+```jsx
+function FormularioContato({ onEnviar }) {
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [mensagem, setMensagem] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Chamando a função passada como prop
+    onEnviar({ nome, email, mensagem });
+
+    // Limpando o formulário
+    setNome("");
+    setEmail("");
+    setMensagem("");
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Nome:</label>
+        <input
+          type="text"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Email:</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Mensagem:</label>
+        <textarea
+          value={mensagem}
+          onChange={(e) => setMensagem(e.target.value)}
+          required
+        />
+      </div>
+
+      <button type="submit">Enviar</button>
+    </form>
+  );
+}
+
+// Uso do componente com função como prop
+function App() {
+  const processarEnvio = (dados) => {
+    console.log("Dados recebidos:", dados);
+    alert(`Mensagem enviada por ${dados.nome}`);
+    // Aqui você normalmente enviaria os dados para um servidor
+  };
+
+  return (
+    <div>
+      <h1>Entre em contato</h1>
+      <FormularioContato onEnviar={processarEnvio} />
+    </div>
+  );
+}
+```
+
+## State Lift (Elevação de Estado)
+
+State lift é uma técnica para compartilhar estado entre componentes irmãos, elevando o estado para o componente pai comum:
+
+```jsx
+function CaixaDeSelecao({ item, selecionado, onToggle }) {
+  return (
+    <div>
+      <label>
+        <input
+          type="checkbox"
+          checked={selecionado}
+          onChange={() => onToggle(item.id)}
+        />
+        {item.nome}
+      </label>
+    </div>
+  );
+}
+
+function ListaDeSelecao({ itens, itensSelecionados, onToggleItem }) {
+  return (
+    <div>
+      {itens.map((item) => (
+        <CaixaDeSelecao
+          key={item.id}
+          item={item}
+          selecionado={itensSelecionados.includes(item.id)}
+          onToggle={onToggleItem}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ResumoSelecao({ itens, itensSelecionados }) {
+  const itensFiltrados = itens.filter((item) =>
+    itensSelecionados.includes(item.id)
+  );
+
+  return (
+    <div>
+      <h3>Itens Selecionados ({itensFiltrados.length})</h3>
+      {itensFiltrados.length === 0 ? (
+        <p>Nenhum item selecionado.</p>
+      ) : (
+        <ul>
+          {itensFiltrados.map((item) => (
+            <li key={item.id}>{item.nome}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// Componente pai que gerencia o estado compartilhado
+function App() {
+  const [itens] = useState([
+    { id: 1, nome: "Item 1" },
+    { id: 2, nome: "Item 2" },
+    { id: 3, nome: "Item 3" },
+    { id: 4, nome: "Item 4" },
+  ]);
+
+  const [itensSelecionados, setItensSelecionados] = useState([]);
+
+  const handleToggleItem = (itemId) => {
+    setItensSelecionados((prevSelecionados) => {
+      if (prevSelecionados.includes(itemId)) {
+        // Remove o item se já estiver selecionado
+        return prevSelecionados.filter((id) => id !== itemId);
+      } else {
+        // Adiciona o item se não estiver selecionado
+        return [...prevSelecionados, itemId];
+      }
+    });
+  };
+
+  return (
+    <div style={{ display: "flex", gap: "20px" }}>
+      <div>
+        <h3>Lista de Itens</h3>
+        <ListaDeSelecao
+          itens={itens}
+          itensSelecionados={itensSelecionados}
+          onToggleItem={handleToggleItem}
+        />
+      </div>
+
+      <div>
+        <ResumoSelecao itens={itens} itensSelecionados={itensSelecionados} />
+      </div>
+    </div>
+  );
+}
+```
+
+Quando usar State Lift:
+
+- Quando dois ou mais componentes precisam compartilhar o mesmo estado
+- Quando você precisa que um componente reflita mudanças em outro componente
+- Quando a comunicação precisa fluir tanto para cima quanto para baixo na árvore de componentes
+
+# Desafio: Sistema de Lista de Compras Interativo
+
+## Objetivo
+
+Criar um sistema de lista de compras que permita aos usuários adicionar itens, marcar como comprados, filtrar por categorias e exibir um resumo das compras.
+
+## Requisitos Funcionais
+
+1. Adicionar novos itens com nome, categoria e quantidade
+2. Marcar itens como comprados/não comprados
+3. Filtrar itens por categoria e status
+4. Exibir resumo do total de itens e itens comprados
+
+## Componentes a Serem Criados
+
+### 1. `FormularioItem.js`
+
+- Formulário para adicionar novos itens
+- Deve receber uma função como prop para adicionar o item à lista principal
+
+### 2. `ItemLista.js`
+
+- Componente para exibir um único item da lista
+- Deve receber props com os dados do item e funções para alterá-lo
+
+### 3. `ListaCompras.js`
+
+- Componente para renderizar a lista de itens usando map()
+- Deve usar o componente ItemLista para cada item
+
+### 4. `Filtros.js`
+
+- Componente com opções para filtrar a lista
+- Deve passar o estado dos filtros para o componente pai
+
+### 5. `Resumo.js`
+
+- Componente para mostrar estatísticas da lista
+- Deve mostrar total de itens e porcentagem de itens comprados
+
+### 6. `App.js`
+
+- Componente principal que integra todos os outros
+- Deve gerenciar o estado principal e as funções para manipulá-lo
+
+## Conceitos a Serem Aplicados
+
+- Gerenciamento de estado com useState
+- Props (incluindo destructuring)
+- Função como prop
+- State lift (elevação de estado)
+- Children prop (opcional)
+- Renderização condicional
+- Renderização de listas com map() e keys
+- Previous state em atualizações de estado
+- Fragments
+
+## Dados Sugeridos
+
+```jsx
+const categorias = [
+  "Frutas",
+  "Laticínios",
+  "Padaria",
+  "Carnes",
+  "Limpeza",
+  "Outros",
+];
+
+const itensIniciais = [
+  { id: 1, nome: "Maçã", categoria: "Frutas", quantidade: 5, comprado: false },
+  {
+    id: 2,
+    nome: "Leite",
+    categoria: "Laticínios",
+    quantidade: 2,
+    comprado: true,
+  },
+  { id: 3, nome: "Pão", categoria: "Padaria", quantidade: 1, comprado: false },
+];
+```
+
+## Dicas de Implementação
+
+1. Comece pelo componente `App.js` e planeje o estado principal
+2. Implemente os componentes individuais um a um
+3. Teste a aplicação após cada componente implementado
+4. Use o destructuring para acessar as props
+5. Lembre-se de usar o previous state ao atualizar arrays ou objetos
+6. Use renderização condicional para mostrar/ocultar elementos baseados em filtros
+
+## Bônus (Opcional)
+
+- Adicionar a funcionalidade de editar itens existentes
+- Persistência local usando localStorage (se já tiver conhecimento)
+- Adicionar validação ao formulário
+- Design responsivo usando CSS básico
+
+Este desafio engloba todos os conceitos que você estudou até agora e não inclui conceitos avançados que você ainda não aprendeu. Cada componente tem um propósito específico e trabalha em conjunto para criar uma aplicação completa.

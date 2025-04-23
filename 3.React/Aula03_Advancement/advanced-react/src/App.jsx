@@ -4,6 +4,7 @@ import ConditionalFormRendering from "./components/ConditionalFormRendering";
 import ConditionalRendering from "./components/ConditionalRendering";
 import DataManagement from "./components/DataManagement";
 import ListRender from "./components/ListRender";
+import ProfileProps from "./components/ProfileProps";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <ListRender />
       <ConditionalRendering />
       <ConditionalFormRendering />
+      <ProfileProps />
     </>
   );
 }
